@@ -2,7 +2,7 @@ const sdk = require("@defillama/sdk")
 
 // const { clyVesting } = require("./clyVesting")
 const { stakingRewards } = require("./stakingRewards")
-const { earlyStageInvestments } = require("./earlyStageInvestments")
+const { earlyStage } = require("./earlyStage")
 const { staking } = require("../helper/staking")
 const { getUniTVL } = require("../helper/unknownTokens")
 
@@ -25,7 +25,7 @@ async function _staking(api) {
 
 function _tvl() {
   const stakingRewardsTVL = stakingRewards(colonyGovernanceToken, stakingV3Contract)
-  const earlyStageInvestmentsTVL = earlyStageInvestments(projectNestFactory)
+  const earlyStageTVL = earlyStage(projectNestFactory)
 
   const colonyDexTVL = getUniTVL({
     factory: colonyDexFactory,
@@ -35,7 +35,7 @@ function _tvl() {
 
   return sdk.util.sumChainTvls([
     stakingRewardsTVL,
-    earlyStageInvestmentsTVL,
+    earlyStageTVL,
     colonyDexTVL
   ])
 }
@@ -45,7 +45,8 @@ module.exports = {
     "Staking is calculated based on CLY tokens locked on Colony staking contracts. " +
     "Vesting is calculated as CLY tokens in the vesting contract. " +
     "TVL also includes rewards in various tokens distributed in the staking contract, " +
-    "actual fundraised stablecoins in projects (Nests), and liquidity from Colony Dex.",
+    "actual fundraised stablecoins in projects (Project Nests), vested early stage project tokens" +
+    "and liquidity from Colony Dex.",
   avax: {
     start: 1638367059, // CLY Token deployment
     tvl: _tvl(),
